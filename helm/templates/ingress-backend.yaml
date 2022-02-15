@@ -1,0 +1,39 @@
+{{- if .Values.backend.ingress.enabled }}
+{{- $backendServiceName := .Values.backend.name -}}
+{{- $backendPort := .Values.backend.service.internalPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.backend.name }}-ingress
+  labels:
+    app: {{ .Values.backend.name }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    release: {{ .Release.Name | quote }}
+  annotations:
+    {{- if .Values.backend.ingress.tls }}
+    ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.backend.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range .Values.backend.ingress.hosts }}
+      - host: {{ . }}
+        http:
+          paths:
+            - backend:
+                serviceName: {{ $backendServiceName }}
+                servicePort: {{ $backendPort }}
+    {{- end }}
+{{- if .Values.backend.ingress.tls }}
+  tls:
+  {{- range .Values.backend.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+{{- end }}

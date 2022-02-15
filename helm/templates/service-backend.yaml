@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.name }}
+  labels:
+    app: {{ .Values.backend.name }}
+    chart: {{.Chart.Name}}
+  annotations:
+    {{- range $key, $value := .Values.backend.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  type: {{ .Values.backend.service.type }}
+  ports:
+    - port: {{ .Values.backend.service.internalPort }}
+      targetPort: {{ .Values.backend.service.internalPort }}
+      protocol: UDP
+      name: {{ .Values.backend.name }}
+  selector:
+    app: {{ .Values.backend.name }}
+    release: "{{ .Release.Name }}"
