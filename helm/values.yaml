@@ -66,4 +66,4 @@ frontend:
         secretName: cert-manager-letsencrypt-rapidsos-com-tls
 
 # Generic settings
-postgresConnString: "postgresql://mnemic:mnemic@rds-write-mco-us-east-1.dev.rapidsos.com:5432/mnemic"
+postgresConnString: "postgresql://XXX:XXXX@rds-write-mco-us-east-1.dev.rapidsos.com:5432/mnemic"
